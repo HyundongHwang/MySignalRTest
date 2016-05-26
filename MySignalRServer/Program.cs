@@ -13,38 +13,25 @@ namespace MySignalRServer
 {
     class Program
     {
+        private const bool _USE_SSL = false;
+
         static void Main(string[] args)
         {
-            // This will *ONLY* bind to localhost, if you want to bind to all addresses
-            // use http://*:8080 to bind to all addresses. 
-            // See http://msdn.microsoft.com/en-us/library/system.net.httplistener.aspx 
-            // for more information.
+            // server host url
+            var url = "";
 
-
-
-            //var option = new StartOptions();
-            //option.Urls.Add("http://localhost:80");
-            //option.Urls.Add("https://localhost:443");
-
-            //using (WebApp.Start<Startup>(option))
-            //{
-            //    Console.WriteLine("Server running on {0}", option);
-            //    Console.ReadLine();
-            //}
-
-
-
-            //using (WebApp.Start<Startup>("http://localhost:80"))
-            //{
-            //    Console.WriteLine("Server running on {0}", "http://localhost:80");
-            //    Console.ReadLine();
-            //}
-
-
-
-            using (WebApp.Start<Startup>("https://*:8080"))
+            if (_USE_SSL)
             {
-                Console.WriteLine("Server running on {0}", "https://*:8080");
+                url = "https://*:8080";
+            }
+            else
+            {
+                url = "http://*:8079";
+            }
+
+            using (WebApp.Start<Startup>(url))
+            {
+                Console.WriteLine($"Server running on url : {url}");
                 Console.ReadLine();
             }
         }
@@ -61,12 +48,16 @@ namespace MySignalRServer
 
     public class MyHub : Hub
     {
+        // server side method #1 : Send
+        // echo name and message
         public void Send(string name, string message)
         {
             Console.WriteLine($"Send name : {name} message :{message}");
             Clients.All.addMessage(name, message);
         }
 
+        // server side method #2 : StartTimer
+        // send msgs every seconds until count variable ...
         public void StartTimer(int count)
         {
             Console.WriteLine($"StartTimer count : {count}");
@@ -112,6 +103,10 @@ namespace MySignalRServer
             return base.OnReconnected();
         }
 
+        /// <summary>
+        /// print context object
+        /// we can know about additional information (like account, auth, ...) in this.Context.
+        /// </summary>
         private void _PrintContext()
         {
             Console.WriteLine($"this.Context.ConnectionId : {this.Context.ConnectionId}");

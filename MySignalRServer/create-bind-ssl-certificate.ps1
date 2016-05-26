@@ -1,7 +1,13 @@
 ﻿Write-Debug "configuration ..."
-$cname = "my company"
-$httpHandlerAppID = "12345678-db90-4b66-8b01-88f7af2e36bf"
-$sslPort = 8080
+
+# Set the CNAME with the same name as the company name
+$cname = "my company" 
+
+# HttpListener Host's AppID, this is fixed!
+$httpHandlerAppID = "12345678-db90-4b66-8b01-88f7af2e36bf" 
+
+# Setting ssl port number you want to enter
+$sslPort = 8080 
 pause
 
 
